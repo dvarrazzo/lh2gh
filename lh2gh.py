@@ -120,7 +120,7 @@ def convert_ticket(lh, milestones):
     if m:
         # submitted through the website
         author = m.group(1)
-        body = m.group(2)
+        body = m.group(2).lstrip()
     else:
         author = lh['creator_name']
 
