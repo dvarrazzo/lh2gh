@@ -27,6 +27,8 @@ def main():
 
     check_dest()
     read_usermap()
+    if not opt.fallback_user or not opt.usermap:
+        raise ScriptError("you need an users map of some sort")
 
     lhms = read_milestones()
     ghms = convert_milestones(lhms)
