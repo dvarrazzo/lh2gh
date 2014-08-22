@@ -172,6 +172,9 @@ def convert_ticket(lh, milestones):
     if 'feature' in (lh['tag'] or ''):
         gh['labels'].append('enhancement')
 
+    if 'question' in (lh['tag'] or ''):
+        gh['labels'].append('question')
+
     # get the closed date from the first closed version
     for ver in lh['versions']:
         if ver['closed']:
