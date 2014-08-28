@@ -8,23 +8,17 @@ support).
 
 .. __: https://gist.github.com/izuzak/654612901803d0d0bc3f
 
-You need a mapping from Lighthouse user names to GitHub usernames: it should
-be saved in a file, one entry per line, tab-separated. One entry should be
-``*`` and is a fallback user to associate users without a (known) GitHub
-account.  Example::
-
-    # file: psycopg.usermap
-    Daniele Varrazzo        ->  dvarrazzo
-    Federico Di Gregorio    ->  fogzot
-    *                       ->  psycoteam
-
 Note that according to GitHub policy only members of the team can be
 associated to the tickets.
 
-The script takes source and destination directories as artuments.  Use
-``--help`` to know all the options. Example::
+The script can remap some of the ticket numbers: if your project has some of
+the ticket id allocated you can move overlapping lighthouse tickets to higher
+numbers.
 
-    $ python lh2gh.py --remap-until=17 --users-map-file=psycopg.usermap \
-        psycopg-lh psycopg-gh
+You can provide a users mapping to map Lighthouse users to GitHub users and
+provide a fallback account to associate tickets and comments of everybody else
+(their name will be noted in the ticket/comment body).
 
-    $ tar czvf tickets-$(date +%Y%m%dT%H%M%S).tar.gz -C psycopg-gh .
+Use ``lh2gh.py --help`` to get all the script options. The file
+``psycopg.options`` contains the options that were used to migrate the psycopg
+project.
