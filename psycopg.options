@@ -1,5 +1,5 @@
 --map-user "Daniele Varrazzo:dvarrazzo"
 --map-user "Federico Di Gregorio:fogzot"
---fallback-use psycoteam
+--fallback-user psycoteam
 --remap-until=25
 --remap-offset=230
