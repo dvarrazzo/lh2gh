@@ -248,19 +248,15 @@ class ScriptError(Exception):
 def parse_cmdline():
     from optparse import OptionParser
     parser = OptionParser(usage="%prog [options] SRCDIR DESTDIR",
-        description=__doc__)
+        description="Convert issues exported from Lighthouse to GitHub")
     parser.add_option('--remap-until', type=int, metavar="N",
-        help="Change the ticket numbers from 1 to N to an higher number, "
-             "in case these numbers are already taken by Github tickets")
+        help="change the ticket numbers from 1 to N to an higher number")
     parser.add_option('--remap-offset', type=int, metavar="M",
-        help="Add M to the tickets selected by --remap-until")
+        help="add M to the tickets selected by --remap-until")
     parser.add_option('--map-user', metavar='OLD:NEW', action='append',
-        help="Map the lighthouse user name 'OLD' to the github username 'NEW'")
+        help="map the lighthouse user name 'OLD' to the github username 'NEW'")
     parser.add_option('--fallback-user', metavar='NAME',
-        help="Set NAME as github namespace for unmapped users")
-    parser.add_option('--users-map-file',
-        help="File with EMAIL USER map for the new tickets. "
-             "One email can be '*' and will be used as fallback")
+        help="set NAME as github username for unmapped users")
 
     opt, args = parser.parse_args()
     if len(args) <> 2:
