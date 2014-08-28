@@ -34,7 +34,6 @@ def main():
     ghms = convert_milestones(lhms)
 
     lhs = read_tickets()
-    opt.maxn = max(lhs)
     ghs = convert_tickets(lhs, ghms)
 
     save_tickets(ghs)
@@ -71,7 +70,9 @@ def map_user(name):
 
 def map_ticket_id(n):
     """Return the new id for a ticket."""
-    return n + opt.maxn if n <= opt.remap_until else n
+    if opt.remap_until is None:
+        return n
+    return n + opt.remap_offset if n <= opt.remap_until else n
 
 def fix_tickets_numbers(s):
     """Apply the tickets map to the tickets numbers found a string."""
@@ -267,9 +268,11 @@ def parse_cmdline():
     from optparse import OptionParser
     parser = OptionParser(usage="%prog [options] SRCDIR DESTDIR",
         description=__doc__)
-    parser.add_option('--remap-until', type=int, metavar="N", default=0,
+    parser.add_option('--remap-until', type=int, metavar="N",
         help="Change the ticket numbers from 1 to N to an higher number, "
              "in case these numbers are already taken by Github tickets")
+    parser.add_option('--remap-offset', type=int, metavar="M",
+        help="Add M to the tickets selected by --remap-until")
     parser.add_option('--users-map-file',
         help="File with EMAIL USER map for the new tickets. "
              "One email can be '*' and will be used as fallback")
@@ -277,6 +280,9 @@ def parse_cmdline():
     opt, args = parser.parse_args()
     if len(args) <> 2:
         parser.error("two directories expected")
+    if (opt.remap_until is None) != (opt.remap_offset is None):
+        parser.error(
+            "please specify both --remap-until and --remap-offset or none")
 
     opt.srcdir, opt.destdir = args
     opt.usermap = {}
