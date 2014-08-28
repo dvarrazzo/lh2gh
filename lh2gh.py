@@ -26,9 +26,6 @@ def main():
     opt = parse_cmdline()
 
     check_dest()
-    read_usermap()
-    if not opt.fallback_user or not opt.usermap:
-        raise ScriptError("you need an users map of some sort")
 
     lhms = read_milestones()
     ghms = convert_milestones(lhms)
@@ -48,25 +45,8 @@ def check_dest():
             return
     raise ScriptError("DESTDIR should be non existing or an empty dir")
 
-
-def read_usermap():
-    """Read the usermap and populate opt inplace"""
-    if not opt.users_map_file:
-        return
-
-    for l in open(opt.users_map_file):
-        if not l.strip(): continue
-        if l.strip().startswith('#'): continue
-        ts = [t.strip() for t in l.split('\t')]
-        if len(ts) != 2:
-            raise ScriptError('bad users map format: "%r"', l)
-        if ts[0] == '*':
-            opt.fallback_user = ts[1]
-        else:
-            opt.usermap[ts[0]] = ts[1]
-
 def map_user(name):
-    return opt.usermap.get(name, opt.fallback_user)
+    return opt.usermap.get(name, opt.fallback_user or name)
 
 def map_ticket_id(n):
     """Return the new id for a ticket."""
@@ -273,6 +253,10 @@ def parse_cmdline():
              "in case these numbers are already taken by Github tickets")
     parser.add_option('--remap-offset', type=int, metavar="M",
         help="Add M to the tickets selected by --remap-until")
+    parser.add_option('--map-user', metavar='OLD:NEW', action='append',
+        help="Map the lighthouse user name 'OLD' to the github username 'NEW'")
+    parser.add_option('--fallback-user', metavar='NAME',
+        help="Set NAME as github namespace for unmapped users")
     parser.add_option('--users-map-file',
         help="File with EMAIL USER map for the new tickets. "
              "One email can be '*' and will be used as fallback")
@@ -285,8 +269,13 @@ def parse_cmdline():
             "please specify both --remap-until and --remap-offset or none")
 
     opt.srcdir, opt.destdir = args
+
     opt.usermap = {}
-    opt.fallback_user = None
+    for s in opt.map_user:
+        if ':' not in s:
+            parser.error("bad user map: '%s'" % s)
+        old, new = s.split(':', 1)
+        opt.usermap[old] = new
 
     return opt
 
