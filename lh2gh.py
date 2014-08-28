@@ -114,6 +114,7 @@ def convert_ticket(lh, milestones):
         parts.append("Originally submitted by: %s" % author)
 
     if lh['number'] != gh['number']:
+        # TODO: add command line option for this URL
         parts.append(
             "Originally submitted as number %d - "
             "http://psycopg.lighthouseapp.com/projects/62710/tickets/%d"
